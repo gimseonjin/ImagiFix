@@ -1,8 +1,22 @@
 {
+  "name": "ImagiFix",
+  "version": "1.0.0",
+  "dependencies": {
+    "turbo-darwin-arm64": "^2.0.4"
+  },
+  "author": "kerry kim",
+  "license": "ISC",
+  "description": "ImagiFix is a SaaS platform for fixing images with AI.",
   "devDependencies": {
     "turbo": "^2.0.4"
   },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "deploy": "turbo deploy"
+  },
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "packageManager": "npm@10.5.1",
 }
