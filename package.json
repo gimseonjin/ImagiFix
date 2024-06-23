@@ -11,6 +11,7 @@
     "turbo": "^2.0.4"
   },
   "scripts": {
+    "start": "node apps/api/dist/main",
     "dev": "turbo dev",
     "build": "turbo build",
     "deploy": "turbo deploy"
