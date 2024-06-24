@@ -1,0 +1,5 @@
+# Ignore CSS files in language statistics
+*.css linguist-vendored
+
+# Ignore minified JavaScript files
+*.min.js linguist-vendored
