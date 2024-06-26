@@ -56,3 +56,11 @@ model Transaction {
   buyerId    Int
   buyer      User     @relation(fields: [buyerId], references: [id])
 }
+
+model DomainEvent {
+  id          String    @id
+  type        String
+  data        String
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
+}
