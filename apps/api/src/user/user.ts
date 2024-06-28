@@ -1,8 +1,6 @@
-import { Type } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { IEvent } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
-import { AggregateRoot } from 'src/core/domain/aggregate-root';
-import { domainEvent } from 'src/core/domain/domain-event';
 
 type Props = {
   id: string;
@@ -16,9 +14,9 @@ type Props = {
   creditBalance?: number;
 };
 
-export class User extends AggregateRoot<Props> {
-  constructor(props: Props) {
-    super(props);
+export class User extends AggregateRoot {
+  constructor(public readonly props: Props) {
+    super();
   }
 
   static create(
@@ -41,29 +39,29 @@ export class User extends AggregateRoot<Props> {
       creditBalance: 10,
     });
 
-    user.addEvent(
-      new UserCreatedEvent({
-        userId: user.id,
-        createdAt: new Date(),
-      }),
-    );
-
+    user.apply(new UserCreatedEvent(user.props.id, new Date()));
     return user;
+  }
+
+  delete(): void {
+    this.apply(new UserDeletedEvent(this.props.id));
   }
 }
 
-export class UserCreatedPayload {
-  @IsString()
-  userId: string;
-
-  @Type(() => Date)
-  createdAt: Date;
+export class UserCreatedEvent implements IEvent {
+  constructor(
+    public readonly userId: string,
+    public readonly createdAt: Date,
+  ) {}
 }
 
-export class UserCreatedEvent extends domainEvent<UserCreatedPayload>(
-  'user.created',
-) {}
+export class UserDeletedEvent implements IEvent {
+  constructor(
+    public readonly userId: string,
+  ) {}
+}
 
-export class UserDeletedEvent extends domainEvent<{ userId: string }>(
-  'user.deleted',
-) {}
+export class UserCreatedPayload {
+  userId: string;
+  createdAt: Date;
+}
