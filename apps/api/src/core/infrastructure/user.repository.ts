@@ -1,6 +1,7 @@
 import UserRepository, { ISaveUser } from './../../user/domain/user.repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaProvider } from './prisma.provider';
+import { User } from 'src/user/domain/user';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -12,22 +13,22 @@ export class UserRepositoryImpl implements UserRepository {
     await this.prismaProvider.user.upsert({
       where: { id: user.id },
       update: {
-        clerkId: user.props.clerkId,
-        email: user.props.email,
-        username: user.props.username,
-        photo: user.props.photo,
-        firstName: user.props.firstName,
-        lastName: user.props.lastName,
-        planId: user.props.planId,
-        creditBalance: user.props.creditBalance,
+        clerkId: user.clerkId,
+        email: user.email,
+        username: user.username,
+        photo: user.photo,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        planId: user.planId,
+        creditBalance: user.creditBalance,
         // 이 부분은 나중에 image & transaction 생기면 추가 구현
         // images: {
-        //   create: user.props.images.map(image => ({
+        //   create: user.images.map(image => ({
         //     url: image.url,
         //   })),
         // },
         // transactions: {
-        //   create: user.props.transactions.map(transaction => ({
+        //   create: user.transactions.map(transaction => ({
         //     amount: transaction.amount,
         //     date: transaction.date,
         //   })),
@@ -35,17 +36,25 @@ export class UserRepositoryImpl implements UserRepository {
       },
       create: {
         id: user.id,
-        clerkId: user.props.clerkId,
-        email: user.props.email,
-        username: user.props.username,
-        photo: user.props.photo,
-        firstName: user.props.firstName,
-        lastName: user.props.lastName,
-        planId: user.props.planId,
-        creditBalance: user.props.creditBalance,
+        clerkId: user.clerkId,
+        email: user.email,
+        username: user.username,
+        photo: user.photo,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        planId: user.planId,
+        creditBalance: user.creditBalance,
       },
     });
 
     return user;
+  }
+
+  async findBy(props: { userId: string }): Promise<User> {
+    const { userId } = props;
+    const userEntity = await this.prismaProvider.user.findFirst({
+      where: { clerkId: userId },
+    });
+    return new User(userEntity);
   }
 }

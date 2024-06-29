@@ -2,9 +2,11 @@ export interface ICreateUser {
   clerkId: string;
   email: string;
   username: string;
+  firstName: string;
+  lastName: string;
   photo: string;
-  firstName?: string;
-  lastName?: string;
-  planId?: number;
-  creditBalance?: number;
+}
+
+export interface IGetUser {
+  userId: string;
 }

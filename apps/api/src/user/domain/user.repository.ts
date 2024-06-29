@@ -8,4 +8,5 @@ export interface ISaveUser {
 
 export default interface UserRepository {
   save(props: ISaveUser): Promise<User>;
+  findBy(props: { userId: string }): Promise<User>;
 }
