@@ -3,6 +3,7 @@ import { CoreModule } from './core/core.module';
 import { UserModule } from './user/user.module';
 import { ApiModule } from './api/api.module';
 import { ConfigModule } from '@nestjs/config';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
     CoreModule,
     UserModule,
     ApiModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

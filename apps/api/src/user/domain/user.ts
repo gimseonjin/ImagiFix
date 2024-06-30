@@ -46,7 +46,11 @@ export class User extends BaseAggregateRoot {
 
   create() {
     this.apply(
-      new UserCreatedEvent({ userId: this.id, createdAt: new Date() }),
+      new UserCreatedEvent({
+        username: this.username,
+        email: this.email,
+        createdAt: new Date(),
+      }),
     );
   }
 

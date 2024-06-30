@@ -5,6 +5,7 @@ export class UserCreatedEvent implements IEvent {
 }
 
 export class UserCreatedPayload {
-  userId: string;
+  email: string;
+  username: string;
   createdAt: Date;
 }

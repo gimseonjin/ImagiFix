@@ -5,6 +5,7 @@ import { UserRepositoryProviderKey } from 'src/user/domain/user.repository';
 import { PrismaProvider } from './infrastructure/prisma.provider';
 import { ImageRepositoryProviderKey } from 'src/image/domain/image.repository';
 import { ImageRepositoryImpl } from './infrastructure/image.repository';
+import { MailSender } from './infrastructure/mail.sender';
 
 const RepoProviders = [
   {
@@ -20,7 +21,7 @@ const RepoProviders = [
 @Global()
 @Module({
   imports: [CqrsModule],
-  providers: [...RepoProviders, PrismaProvider],
-  exports: [CqrsModule, ...RepoProviders],
+  providers: [...RepoProviders, PrismaProvider, MailSender],
+  exports: [CqrsModule, ...RepoProviders, MailSender],
 })
 export class CoreModule {}
