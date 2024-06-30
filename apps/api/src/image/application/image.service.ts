@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventPublisher } from '@nestjs/cqrs';
-import { IAddImage } from './image.interface';
+import { IAddImage, IGetImage } from './image.interface';
 import { Image } from '../domain/image';
 import {
   ImageRepositoryProviderKey,
@@ -22,5 +22,12 @@ export default class ImageService {
     );
     image.create();
     this.imageRepo.save({ image });
+  }
+
+  async getImage(props: IGetImage) {
+    const { imageId } = props;
+    return this.publisher.mergeObjectContext(
+      await this.imageRepo.findBy({ imageId }),
+    );
   }
 }

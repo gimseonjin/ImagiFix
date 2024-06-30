@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaProvider } from './prisma.provider';
 import { Image } from '../../image/domain/image';
+import { ImageRepository } from '../../image/domain/image.repository';
 
 @Injectable()
-export class ImageRepositoryImpl {
+export class ImageRepositoryImpl implements ImageRepository {
   constructor(private readonly prismaProvier: PrismaProvider) {}
 
   async save(props: { image: Image }) {
@@ -46,5 +47,19 @@ export class ImageRepositoryImpl {
     });
 
     return image;
+  }
+
+  async findBy({ imageId }: { imageId: string }) {
+    const image = await this.prismaProvier.image.findFirst({
+      where: { id: imageId },
+      include: {
+        author: true,
+      },
+    });
+
+    return new Image({
+      ...image,
+      config: image.config as object,
+    });
   }
 }

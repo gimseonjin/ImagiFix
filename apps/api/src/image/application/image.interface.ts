@@ -16,3 +16,7 @@ export interface IAddImage {
   };
   author: User;
 }
+
+export interface IGetImage {
+  imageId: string;
+}
