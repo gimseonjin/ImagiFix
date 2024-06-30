@@ -1,5 +1,5 @@
 import { UserCreatedEvent } from './user-created.event';
-import { BaseAggregateRoot } from 'src/core/domain/base-aggregate-root';
+import { BaseAggregateRoot } from '../../core/domain/base-aggregate-root';
 
 type CreateUserProps = {
   id?: string;
@@ -13,15 +13,23 @@ type CreateUserProps = {
   creditBalance?: number;
 };
 
+type UpdateUserProps = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  photo: string;
+};
+
 export class User extends BaseAggregateRoot {
   public readonly clerkId?: string;
   public readonly email?: string;
-  public readonly username?: string;
-  public readonly photo?: string;
-  public readonly firstName?: string;
-  public readonly lastName?: string;
   public readonly planId: number;
   public readonly creditBalance: number;
+  public username?: string;
+  public photo?: string;
+  public firstName?: string;
+  public lastName?: string;
 
   constructor(props: CreateUserProps) {
     super(props.id);
@@ -37,5 +45,12 @@ export class User extends BaseAggregateRoot {
     this.apply(
       new UserCreatedEvent({ userId: this.id, createdAt: new Date() }),
     );
+  }
+
+  update(props: UpdateUserProps) {
+    this.username = props.username;
+    this.photo = props.photo;
+    this.firstName = props.firstName;
+    this.lastName = props.lastName;
   }
 }

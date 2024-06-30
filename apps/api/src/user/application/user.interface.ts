@@ -10,3 +10,11 @@ export interface ICreateUser {
 export interface IGetUser {
   userId: string;
 }
+
+export interface IUpdateUser {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  photo: string;
+}

@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/user';
 import { EventPublisher } from '@nestjs/cqrs';
-import { ICreateUser, IGetUser } from './user.interface';
+import { ICreateUser, IGetUser, IUpdateUser } from './user.interface';
 import UserRepository, {
   UserRepositoryProviderKey,
 } from '../domain/user.repository';
+import { UserNotFoundError } from './user.error';
 
 @Injectable()
 export default class UserService {
@@ -25,5 +26,17 @@ export default class UserService {
     return this.publisher.mergeObjectContext(
       await this.userRepo.findBy({ userId }),
     );
+  }
+
+  async update(props: IUpdateUser) {
+    const { userId } = props;
+    const user = this.publisher.mergeObjectContext(
+      await this.userRepo.findBy({ userId }),
+    );
+
+    if (!user) throw new UserNotFoundError(userId);
+
+    user.update(props);
+    return user;
   }
 }
