@@ -23,9 +23,8 @@ export default class UserService {
 
   async getUser(props: IGetUser) {
     const { userId } = props;
-    return this.publisher.mergeObjectContext(
-      await this.userRepo.findBy({ userId }),
-    );
+    const user = await this.userRepo.findBy({ userId });
+    return user ? this.publisher.mergeObjectContext(user) : null;
   }
 
   async update(props: IUpdateUser) {

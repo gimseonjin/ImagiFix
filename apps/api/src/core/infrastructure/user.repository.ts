@@ -38,12 +38,12 @@ export class UserRepositoryImpl implements UserRepository {
     return user;
   }
 
-  async findBy(props: { userId: string }): Promise<User> {
+  async findBy(props: { userId: string }): Promise<User | null> {
     const { userId } = props;
-    const userEntity = await this.prismaProvider.user.findFirst({
+    const user = await this.prismaProvider.user.findFirst({
       where: { clerkId: userId },
     });
-    return new User(userEntity);
+    return user ? new User(user) : null;
   }
 
   async delete(props: { user: User }) {
