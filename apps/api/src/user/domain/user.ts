@@ -1,5 +1,6 @@
 import { UserCreatedEvent } from './user-created.event';
 import { BaseAggregateRoot } from '../../core/domain/base-aggregate-root';
+import { UserDeletedEvent } from './user-deleted.event';
 
 type CreateUserProps = {
   id?: string;
@@ -52,5 +53,11 @@ export class User extends BaseAggregateRoot {
     this.photo = props.photo;
     this.firstName = props.firstName;
     this.lastName = props.lastName;
+  }
+
+  delete() {
+    this.apply(
+      new UserDeletedEvent({ userId: this.id, deletedAt: new Date() }),
+    );
   }
 }

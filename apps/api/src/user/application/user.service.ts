@@ -30,13 +30,21 @@ export default class UserService {
 
   async update(props: IUpdateUser) {
     const { userId } = props;
-    const user = this.publisher.mergeObjectContext(
-      await this.userRepo.findBy({ userId }),
-    );
+    const user = await this.getUser({ userId });
 
     if (!user) throw new UserNotFoundError(userId);
 
     user.update(props);
     return user;
+  }
+
+  async delete(props: IGetUser) {
+    const { userId } = props;
+    const user = await this.getUser({ userId });
+
+    if (!user) throw new UserNotFoundError(userId);
+
+    user.delete();
+    this.userRepo.delete({ user });
   }
 }

@@ -57,4 +57,11 @@ export class UserRepositoryImpl implements UserRepository {
     });
     return new User(userEntity);
   }
+
+  async delete(props: { user: User }) {
+    const { user } = props;
+    await this.prismaProvider.user.delete({
+      where: { id: user.id },
+    });
+  }
 }
