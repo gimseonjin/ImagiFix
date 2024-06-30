@@ -35,7 +35,7 @@ export default class UserService {
     if (!user) throw new UserNotFoundError(userId);
 
     user.update(props);
-    return user;
+    return this.userRepo.save({ user });
   }
 
   async delete(props: IGetUser) {

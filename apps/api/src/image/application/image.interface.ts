@@ -26,3 +26,20 @@ export interface IGetUserImages {
   page: number;
   pageSize: number;
 }
+
+export interface IUpdateImage {
+  updateImageProps: {
+    title: string;
+    publicId: string;
+    transformationType: string;
+    width: number;
+    height: number;
+    config: any;
+    secureURL: string;
+    transformationURL: string;
+    aspectRatio: string | undefined;
+    prompt: string | undefined;
+    color: string | undefined;
+  };
+  imageId: string;
+}

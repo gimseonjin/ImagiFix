@@ -1,12 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventPublisher } from '@nestjs/cqrs';
-import { IAddImage, IGetImage, IGetUserImages } from './image.interface';
+import {
+  IAddImage,
+  IGetImage,
+  IGetUserImages,
+  IUpdateImage,
+} from './image.interface';
 import { Image } from '../domain/image';
 import {
   ImageRepositoryProviderKey,
   ImageRepository,
 } from '../domain/image.repository';
 import { Pageable } from '../../core/domain/pageable';
+import { ImageNotFoundError } from './image.error';
 
 @Injectable()
 export default class ImageService {
@@ -38,5 +44,15 @@ export default class ImageService {
 
   async getUserImages({ author, page, pageSize }: IGetUserImages) {
     return this.imageRepo.findAllBy({ author, page, pageSize });
+  }
+
+  async updateImage(props: IUpdateImage) {
+    const { updateImageProps, imageId } = props;
+    const image = await this.getImage({ imageId: imageId });
+
+    if (!image) throw new ImageNotFoundError(imageId);
+
+    image.update(updateImageProps);
+    return this.imageRepo.save({ image });
   }
 }

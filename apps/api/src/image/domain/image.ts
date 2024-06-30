@@ -19,6 +19,20 @@ type CreateImageProps = {
   updatedAt?: Date;
 };
 
+type UpdateImageProps = {
+  title: string;
+  publicId: string;
+  transformationType: string;
+  width?: number;
+  height?: number;
+  config?: object;
+  secureURL: string;
+  transformationUrl?: string;
+  aspectRatio?: string;
+  prompt?: string;
+  color?: string;
+};
+
 export type Author = {
   id: string;
   firstName?: string;
@@ -27,20 +41,20 @@ export type Author = {
 };
 
 export class Image extends BaseAggregateRoot {
-  public readonly title: string;
   public readonly author: Author;
-  public readonly transformationType: string;
-  public readonly publicId: string;
-  public readonly secureURL: string;
-  public readonly width?: number;
-  public readonly height?: number;
-  public readonly config?: object;
   public readonly transformationUrl?: string;
   public readonly aspectRatio?: string;
   public readonly color?: string;
   public readonly prompt?: string;
   public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  public title: string;
+  public publicId: string;
+  public transformationType: string;
+  public secureURL: string;
+  public width?: number;
+  public height?: number;
+  public config?: object;
+  public updatedAt: Date;
 
   constructor(props: CreateImageProps) {
     super(props.id);
@@ -62,5 +76,16 @@ export class Image extends BaseAggregateRoot {
 
   create() {
     this.apply(new ImageCreatedEvent({ image: this }));
+  }
+
+  update(props: UpdateImageProps) {
+    this.title = props.title;
+    this.publicId = props.publicId;
+    this.transformationType = props.transformationType;
+    this.secureURL = props.secureURL;
+    this.width = props.width;
+    this.height = props.height;
+    this.config = props.config;
+    this.updatedAt = new Date();
   }
 }
