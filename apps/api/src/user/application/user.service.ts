@@ -41,7 +41,7 @@ export default class UserService {
     const { userId } = props;
     const user = await this.getUser({ userId });
 
-    if (!user) throw new UserNotFoundError(userId);
+    if (!user) return;
 
     user.delete();
     this.userRepo.delete({ user });

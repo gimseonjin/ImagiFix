@@ -17,8 +17,8 @@ model User {
   id            String        @id
   clerkId       String        @unique
   email         String        @unique
-  username      String        @unique
-  photo         String
+  username      String?       @unique
+  photo         String?
   firstName     String?
   lastName      String?
   planId        Int           @default(1)
