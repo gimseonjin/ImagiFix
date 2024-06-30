@@ -16,9 +16,9 @@ export default class ImageService {
   ) {}
 
   async addImage(props: IAddImage) {
-    const { createImageProps } = props;
+    const { createImageProps, author } = props;
     const image = this.publisher.mergeObjectContext(
-      new Image(createImageProps),
+      new Image({ ...createImageProps, author }),
     );
     image.create();
     this.imageRepo.save({ image });

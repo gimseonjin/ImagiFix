@@ -3,11 +3,17 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { UserRepositoryImpl } from './infrastructure/user.repository';
 import { UserRepositoryProviderKey } from 'src/user/domain/user.repository';
 import { PrismaProvider } from './infrastructure/prisma.provider';
+import { ImageRepositoryProviderKey } from 'src/image/domain/image.repository';
+import { ImageRepositoryImpl } from './infrastructure/image.repository';
 
 const RepoProviders = [
   {
     provide: UserRepositoryProviderKey,
     useClass: UserRepositoryImpl,
+  },
+  {
+    provide: ImageRepositoryProviderKey,
+    useClass: ImageRepositoryImpl,
   },
 ];
 

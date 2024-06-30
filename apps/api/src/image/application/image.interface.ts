@@ -1,3 +1,5 @@
+import { User } from '../../user/domain/user';
+
 export interface IAddImage {
   createImageProps: {
     title: string;
@@ -12,5 +14,5 @@ export interface IAddImage {
     prompt: string | undefined;
     color: string | undefined;
   };
-  userId: string;
+  author: User;
 }

@@ -3,6 +3,7 @@ import { ImageCreatedEvent } from './image-created.event';
 
 type CreateImageProps = {
   id?: string;
+  author: Author;
   title: string;
   publicId: string;
   transformationType: string;
@@ -18,8 +19,16 @@ type CreateImageProps = {
   updatedAt?: Date;
 };
 
+type Author = {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  clerkId: string;
+};
+
 export class Image extends BaseAggregateRoot {
   public readonly title: string;
+  public readonly author: Author;
   public readonly transformationType: string;
   public readonly publicId: string;
   public readonly secureURL: string;
@@ -35,6 +44,7 @@ export class Image extends BaseAggregateRoot {
 
   constructor(props: CreateImageProps) {
     super(props.id);
+    this.author = props.author;
     this.title = props.title;
     this.transformationType = props.transformationType;
     this.publicId = props.publicId;

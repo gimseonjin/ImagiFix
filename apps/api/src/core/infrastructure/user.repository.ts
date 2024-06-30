@@ -21,18 +21,6 @@ export class UserRepositoryImpl implements UserRepository {
         lastName: user.lastName,
         planId: user.planId,
         creditBalance: user.creditBalance,
-        // 이 부분은 나중에 image & transaction 생기면 추가 구현
-        // images: {
-        //   create: user.images.map(image => ({
-        //     url: image.url,
-        //   })),
-        // },
-        // transactions: {
-        //   create: user.transactions.map(transaction => ({
-        //     amount: transaction.amount,
-        //     date: transaction.date,
-        //   })),
-        // },
       },
       create: {
         id: user.id,

@@ -4,12 +4,12 @@ import { UserDeletedEvent } from './user-deleted.event';
 
 type CreateUserProps = {
   id?: string;
-  clerkId?: string;
-  email?: string;
-  username?: string;
-  photo?: string;
-  firstName?: string;
-  lastName?: string;
+  clerkId: string;
+  email: string;
+  username: string;
+  photo: string;
+  firstName: string;
+  lastName: string;
   planId?: number;
   creditBalance?: number;
 };
@@ -23,8 +23,8 @@ type UpdateUserProps = {
 };
 
 export class User extends BaseAggregateRoot {
-  public readonly clerkId?: string;
-  public readonly email?: string;
+  public readonly clerkId: string;
+  public readonly email: string;
   public readonly planId: number;
   public readonly creditBalance: number;
   public username?: string;
