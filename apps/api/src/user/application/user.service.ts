@@ -16,8 +16,8 @@ export default class UserService {
   ) {}
 
   async create(props: ICreateUser) {
-    const userModel = this.publisher.mergeClassContext(User);
-    const user = new userModel(props);
+    const user = this.publisher.mergeObjectContext(new User(props));
+    user.create();
     this.userRepo.save({ user });
   }
 

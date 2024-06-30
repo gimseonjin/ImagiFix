@@ -42,7 +42,9 @@ export class User extends BaseAggregateRoot {
     this.lastName = props.lastName;
     this.planId = props.planId ?? 1;
     this.creditBalance = props.creditBalance ?? 10;
+  }
 
+  create() {
     this.apply(
       new UserCreatedEvent({ userId: this.id, createdAt: new Date() }),
     );
