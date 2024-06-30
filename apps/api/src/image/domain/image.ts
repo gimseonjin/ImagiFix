@@ -19,7 +19,7 @@ type CreateImageProps = {
   updatedAt?: Date;
 };
 
-type Author = {
+export type Author = {
   id: string;
   firstName?: string;
   lastName?: string;

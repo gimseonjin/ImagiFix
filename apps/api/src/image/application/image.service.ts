@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventPublisher } from '@nestjs/cqrs';
-import { IAddImage, IGetImage } from './image.interface';
+import { IAddImage, IGetImage, IGetUserImages } from './image.interface';
 import { Image } from '../domain/image';
 import {
   ImageRepositoryProviderKey,
@@ -33,6 +33,10 @@ export default class ImageService {
   }
 
   async getAllImages({ page, pageSize }: Pageable) {
-    return this.imageRepo.findAll({ page, pageSize });
+    return this.imageRepo.findAllBy({ page, pageSize });
+  }
+
+  async getUserImages({ author, page, pageSize }: IGetUserImages) {
+    return this.imageRepo.findAllBy({ author, page, pageSize });
   }
 }

@@ -20,3 +20,9 @@ export interface IAddImage {
 export interface IGetImage {
   imageId: string;
 }
+
+export interface IGetUserImages {
+  author: User;
+  page: number;
+  pageSize: number;
+}

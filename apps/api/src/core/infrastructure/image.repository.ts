@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaProvider } from './prisma.provider';
-import { Image } from '../../image/domain/image';
+import { Author, Image } from '../../image/domain/image';
 import { ImageRepository } from '../../image/domain/image.repository';
 import { Pageable } from '../domain/pageable';
 
@@ -64,19 +64,23 @@ export class ImageRepositoryImpl implements ImageRepository {
     });
   }
 
-  async findAll({ page, pageSize }: Pageable) {
+  async findAllBy({ author, page, pageSize }: { author?: Author } & Pageable) {
     const skip = (page - 1) * pageSize;
     const take = pageSize;
 
-    const images = await this.prismaProvider.image.findMany({
-      skip,
-      take,
-      include: {
-        author: true,
-      },
-    });
+    const where = author ? { authorId: author.id } : {};
 
-    const totalImages = await this.prismaProvider.image.count();
+    const [images, totalImages] = await Promise.all([
+      this.prismaProvider.image.findMany({
+        skip,
+        take,
+        where,
+        include: {
+          author: true,
+        },
+      }),
+      this.prismaProvider.image.count({ where }),
+    ]);
 
     return {
       images: images.map(

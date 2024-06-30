@@ -1,12 +1,16 @@
 import { Pageable } from '../../core/domain/pageable';
-import { Image } from '../domain/image';
+import { Author, Image } from '../domain/image';
+
+export interface IFindImagesQuery extends Pageable {
+  author?: Author;
+}
 
 export const ImageRepositoryProviderKey = 'ImageRepository';
 
 export interface ImageRepository {
   save({ image }: { image: Image }): Promise<Image>;
   findBy({ imageId }: { imageId: string }): Promise<Image>;
-  findAll({ page, pageSize }: Pageable): Promise<{
+  findAllBy(query: IFindImagesQuery): Promise<{
     images: Image[];
     total: number;
     page: number;
