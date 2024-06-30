@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaProvider } from './prisma.provider';
 import { Author, Image } from '../../image/domain/image';
-import { ImageRepository } from '../../image/domain/image.repository';
+import {
+  IDeleteImageQuery,
+  ImageRepository,
+} from '../../image/domain/image.repository';
 import { Pageable } from '../domain/pageable';
 
 @Injectable()
@@ -94,5 +97,11 @@ export class ImageRepositoryImpl implements ImageRepository {
       page,
       pageSize,
     };
+  }
+
+  delete({ imageId }: IDeleteImageQuery) {
+    this.prismaProvider.image.delete({
+      where: { id: imageId },
+    });
   }
 }

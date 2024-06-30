@@ -55,4 +55,9 @@ export default class ImageService {
     image.update(updateImageProps);
     return this.imageRepo.save({ image });
   }
+
+  async deleteImage(props: IGetImage) {
+    const { imageId } = props;
+    this.imageRepo.delete({ imageId });
+  }
 }

@@ -5,6 +5,10 @@ export interface IFindImagesQuery extends Pageable {
   author?: Author;
 }
 
+export interface IDeleteImageQuery {
+  imageId: string;
+}
+
 export const ImageRepositoryProviderKey = 'ImageRepository';
 
 export interface ImageRepository {
@@ -16,4 +20,5 @@ export interface ImageRepository {
     page: number;
     pageSize: number;
   }>;
+  delete({ imageId }: IDeleteImageQuery): void;
 }
