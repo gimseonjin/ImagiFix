@@ -6,6 +6,7 @@ import {
   ImageRepositoryProviderKey,
   ImageRepository,
 } from '../domain/image.repository';
+import { Pageable } from '../../core/domain/pageable';
 
 @Injectable()
 export default class ImageService {
@@ -29,5 +30,9 @@ export default class ImageService {
     return this.publisher.mergeObjectContext(
       await this.imageRepo.findBy({ imageId }),
     );
+  }
+
+  async getAllImages({ page, pageSize }: Pageable) {
+    return this.imageRepo.findAll({ page, pageSize });
   }
 }

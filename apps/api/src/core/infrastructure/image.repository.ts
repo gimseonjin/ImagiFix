@@ -2,15 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PrismaProvider } from './prisma.provider';
 import { Image } from '../../image/domain/image';
 import { ImageRepository } from '../../image/domain/image.repository';
+import { Pageable } from '../domain/pageable';
 
 @Injectable()
 export class ImageRepositoryImpl implements ImageRepository {
-  constructor(private readonly prismaProvier: PrismaProvider) {}
+  constructor(private readonly prismaProvider: PrismaProvider) {}
 
   async save(props: { image: Image }) {
     const { image } = props;
 
-    await this.prismaProvier.image.upsert({
+    await this.prismaProvider.image.upsert({
       where: { id: image.id },
       update: {
         title: image.title,
@@ -50,7 +51,7 @@ export class ImageRepositoryImpl implements ImageRepository {
   }
 
   async findBy({ imageId }: { imageId: string }) {
-    const image = await this.prismaProvier.image.findFirst({
+    const image = await this.prismaProvider.image.findFirst({
       where: { id: imageId },
       include: {
         author: true,
@@ -61,5 +62,33 @@ export class ImageRepositoryImpl implements ImageRepository {
       ...image,
       config: image.config as object,
     });
+  }
+
+  async findAll({ page, pageSize }: Pageable) {
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    const images = await this.prismaProvider.image.findMany({
+      skip,
+      take,
+      include: {
+        author: true,
+      },
+    });
+
+    const totalImages = await this.prismaProvider.image.count();
+
+    return {
+      images: images.map(
+        (image) =>
+          new Image({
+            ...image,
+            config: image.config as object,
+          }),
+      ),
+      total: totalImages,
+      page,
+      pageSize,
+    };
   }
 }
