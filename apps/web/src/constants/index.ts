@@ -161,6 +161,7 @@ export const transformationTypes = {
   },
 };
 
+export type AspectRatioKey = keyof typeof aspectRatioOptions;
 export const aspectRatioOptions = {
   "1:1": {
     aspectRatio: "1:1",
