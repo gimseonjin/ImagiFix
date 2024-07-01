@@ -1,9 +1,5 @@
 const AddTransformationType = async () => {
-  return (
-    <>
-        add transformation type page
-    </>
-  )
-}
+  return <>add transformation type page</>;
+};
 
-export default AddTransformationType
+export default AddTransformationType;

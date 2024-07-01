@@ -1,10 +1,5 @@
 const Profile = async () => {
-
-  return (
-    <>
-      profile page
-    </>
-  );
+  return <>profile page</>;
 };
 
 export default Profile;

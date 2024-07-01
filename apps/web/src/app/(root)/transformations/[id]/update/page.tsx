@@ -1,10 +1,5 @@
 const TransformationsUpdate = async () => {
-
-  return (
-    <>
-        transformations update page
-    </>
-  );
+  return <>transformations update page</>;
 };
 
 export default TransformationsUpdate;

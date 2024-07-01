@@ -1,9 +1,5 @@
 const Credits = async () => {
-  return (
-    <>
-      credits page
-    </>
-  );
+  return <>credits page</>;
 };
 
 export default Credits;
