@@ -6,12 +6,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import {
   Select,
@@ -28,7 +22,9 @@ import {
   transformationTypes,
 } from "@/constants";
 import { CustomField } from "./CustomField";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { debounce } from "@/lib/utils";
+import _ from "lodash";
 
 export const formSchema = z.object({
   title: z.string(),
@@ -53,6 +49,7 @@ const TransformationForm = ({
   const [isTransforming, setIsTransforming] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [transformationConfig, setTransformationConfig] = useState(config);
+  const [isPending, startTransition] = useTransition();
 
   const initialValues =
     data && action === "Update"
@@ -77,16 +74,52 @@ const TransformationForm = ({
   const onSelectFieldHandler = (
     value: string,
     onChangeFiled: (value: string) => void,
-  ) => {};
+  ) => {
+    const imageSize = aspectRatioOptions[value as AspectRatioKey];
+
+    setImage((prev: any) => ({
+      ...prev,
+      aspectRatio: imageSize.aspectRatio,
+      width: imageSize.width,
+      height: imageSize.height,
+    }));
+
+    setNewTransformation(transformationType.config);
+
+    return onChangeFiled(value);
+  };
 
   const onInputChangeHandler = (
     fieldName: string,
     value: string,
     type: string,
     onChangeFiled: (value: string) => void,
-  ) => {};
+  ) => {
+    debounce(() => {
+      setNewTransformation((prev: any) => ({
+        ...prev,
+        [type]: {
+          ...prev?.[type],
+          [fieldName === "prompt" ? "prompt" : "to"]: value,
+        },
+      }));
 
-  const onTransformHandler = () => {};
+      return onChangeFiled(value);
+    }, 1000);
+  };
+
+  // TODO: Credit 차감 로직 만들기
+  const onTransformHandler = () => {
+    setIsTransforming(true);
+
+    setTransformationConfig(
+      _.merge({}, newTransformation, transformationConfig),
+    );
+
+    setNewTransformation(null);
+
+    startTransition(async () => {});
+  };
 
   return (
     <Form {...form}>
