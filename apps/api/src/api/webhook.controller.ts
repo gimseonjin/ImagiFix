@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { UserJSON, WebhookEvent, clerkClient } from '@clerk/clerk-sdk-node';
+import { UserJSON, WebhookEvent } from '@clerk/clerk-sdk-node';
 import { Webhook } from './decorator/webhook.decorator';
 import { SvixWebhookGuard } from './guard/svix-webhook.guard';
 import UserService from 'src/user/application/user.service';
