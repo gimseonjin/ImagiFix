@@ -7,6 +7,6 @@ import { SvixWebhookGuard } from './guard/svix-webhook.guard';
 @Module({
   imports: [UserModule],
   controllers: [UserController, WebhookController],
-  providers: [SvixWebhookGuard]
+  providers: [SvixWebhookGuard],
 })
 export class ApiModule {}

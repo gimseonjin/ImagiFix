@@ -35,13 +35,16 @@ export class WebhookController {
       return await handler(webhook);
     } catch (error) {
       console.error('Error processing event:', error);
-      throw new HttpException('Error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error occurred',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   private async handleUserCreated(webhook: WebhookEvent) {
-
-    const { id, email_addresses, image_url, first_name, last_name, username } = webhook.data as UserJSON;
+    const { id, email_addresses, image_url, first_name, last_name, username } =
+      webhook.data as UserJSON;
 
     const user = {
       clerkId: id,
@@ -58,7 +61,8 @@ export class WebhookController {
   }
 
   private async handleUserUpdated(webhook: WebhookEvent) {
-    const { id, image_url, first_name, last_name, username } = webhook.data as UserJSON;
+    const { id, image_url, first_name, last_name, username } =
+      webhook.data as UserJSON;
 
     const user = {
       firstName: first_name,
@@ -68,9 +72,9 @@ export class WebhookController {
     };
 
     const updatedUser = await this.userService.update({
-        userId: id,
-        ...user,
-      });
+      userId: id,
+      ...user,
+    });
 
     return { message: 'OK', user: updatedUser };
   }

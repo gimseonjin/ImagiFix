@@ -1,5 +1,15 @@
-const AddTransformationType = async () => {
-  return <>add transformation type page</>;
+import Header from "@/components/shared/Header";
+import { transformationTypes } from "@/constants";
+
+const AddTransformationType = async ({
+  params: { type },
+}: SearchParamProps) => {
+
+  const transformation = transformationTypes[type];
+
+  return (
+    <Header title={transformation.title} subtitle={transformation.subTitle} />
+  );
 };
 
 export default AddTransformationType;
