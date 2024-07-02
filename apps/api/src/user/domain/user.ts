@@ -26,7 +26,7 @@ export class User extends BaseAggregateRoot {
   public readonly clerkId: string;
   public readonly email: string;
   public readonly planId: number;
-  public readonly creditBalance: number;
+  public creditBalance: number;
   public username?: string;
   public photo?: string;
   public firstName?: string;
@@ -65,5 +65,12 @@ export class User extends BaseAggregateRoot {
     this.apply(
       new UserDeletedEvent({ userId: this.id, deletedAt: new Date() }),
     );
+  }
+
+  decreaseCreditBalance(amount: number) {
+    if (this.creditBalance < amount) {
+      throw new Error('Insufficient credit balance');
+    }
+    this.creditBalance -= amount;
   }
 }

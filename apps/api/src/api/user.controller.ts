@@ -10,6 +10,7 @@ import {
 import UserService from 'src/user/application/user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { DecreaseCreditBalanceDto } from './dto/decrease-credit-balance.dto';
 
 @Controller('user')
 export default class UserController {
@@ -37,5 +38,17 @@ export default class UserController {
   async deleteUser(@Param('id') userId: string) {
     await this.userSvc.delete({ userId });
     return { message: 'User deleted successfully' };
+  }
+
+  @Patch(':id/decrease-balance')
+  async decreaseCreditBalance(
+    @Param('id') userId: string,
+    @Body() decreaseCreditBalanceDto: DecreaseCreditBalanceDto,
+  ) {
+    const updatedUser = await this.userSvc.decreaseCreditBalance({ 
+      userId, 
+      amount: decreaseCreditBalanceDto.amount 
+    });
+    return { message: 'Credit balance decreased successfully', user: updatedUser };
   }
 }

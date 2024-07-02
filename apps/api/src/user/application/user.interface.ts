@@ -18,3 +18,8 @@ export interface IUpdateUser {
   username: string;
   photo: string;
 }
+
+export interface IDecreasCreditBalance {
+  userId: string;
+  amount: number;
+}

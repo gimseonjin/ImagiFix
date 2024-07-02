@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/user';
 import { EventPublisher } from '@nestjs/cqrs';
-import { ICreateUser, IGetUser, IUpdateUser } from './user.interface';
+import { ICreateUser, IDecreasCreditBalance, IGetUser, IUpdateUser } from './user.interface';
 import UserRepository, {
   UserRepositoryProviderKey,
 } from '../domain/user.repository';
@@ -45,5 +45,15 @@ export default class UserService {
 
     user.delete();
     this.userRepo.delete({ user });
+  }
+
+  async decreaseCreditBalance(props: IDecreasCreditBalance) {
+    const { userId, amount } = props;
+    const user = await this.getUser({ userId });
+
+    if (!user) throw new UserNotFoundError(userId);
+
+    user.decreaseCreditBalance(amount);
+    return this.userRepo.save({ user });
   }
 }
