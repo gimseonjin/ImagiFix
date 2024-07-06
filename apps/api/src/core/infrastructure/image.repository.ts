@@ -99,8 +99,8 @@ export class ImageRepositoryImpl implements ImageRepository {
     };
   }
 
-  delete({ imageId }: IDeleteImageQuery) {
-    this.prismaProvider.image.delete({
+  async delete({ imageId }: IDeleteImageQuery) {
+    await this.prismaProvider.image.delete({
       where: { id: imageId },
     });
   }

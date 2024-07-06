@@ -1,4 +1,3 @@
 export class DecreaseCreditBalanceDto {
-    amount: number;
-  }
-  
+  amount: number;
+}

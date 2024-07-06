@@ -14,13 +14,16 @@ export async function PATCH(
     );
   }
 
-  const response = await fetch(`${SERVER_URL}/api/user/${id}/decrease-balance`, {
-    method: "PATCH",
-    body: JSON.stringify(await req.json()),
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${SERVER_URL}/api/user/${id}/decrease-balance`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(await req.json()),
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Error fetching user: ${response.statusText}`);

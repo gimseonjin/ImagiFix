@@ -1,7 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/user';
 import { EventPublisher } from '@nestjs/cqrs';
-import { ICreateUser, IDecreasCreditBalance, IGetUser, IUpdateUser } from './user.interface';
+import {
+  ICreateUser,
+  IDecreasCreditBalance,
+  IGetUser,
+  IUpdateUser,
+} from './user.interface';
 import UserRepository, {
   UserRepositoryProviderKey,
 } from '../domain/user.repository';

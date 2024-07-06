@@ -57,7 +57,7 @@ declare type AddImageParams = {
 
 declare type UpdateImageParams = {
   image: {
-    _id: string;
+    id: string;
     title: string;
     publicId: string;
     transformationType: string;
@@ -111,11 +111,11 @@ const addImage = async ({ image, userId }: AddImageParams) => {
   const { image: newImage } = await response.json();
 
   return newImage;
-}
+};
 
 const updateImage = async ({ image }: UpdateImageParams) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_CLIENT_SERVER_URL}/api/image/${image._id}`,
+    `${process.env.NEXT_PUBLIC_CLIENT_SERVER_URL}/api/image/${image.id}`,
     {
       method: "PATCH",
       body: JSON.stringify({ image: image }),
@@ -132,7 +132,7 @@ const updateImage = async ({ image }: UpdateImageParams) => {
   const { updatedImage } = await response.json();
 
   return updatedImage;
-}
+};
 
 const TransformationForm = ({
   action,
@@ -193,34 +193,34 @@ const TransformationForm = ({
         color: values.color,
       };
 
-      if(action === 'Add') {
+      if (action === "Add") {
         try {
           const newImage = await addImage({
             image: imageData,
             userId,
-          })
+          });
 
-          if(newImage) {
-            form.reset()
-            setImage(data)
-            router.push(`/transformations/${newImage._id}`)
+          if (newImage) {
+            form.reset();
+            setImage(data);
+            router.push(`/transformations/${newImage.id}`);
           }
         } catch (error) {
           console.log(error);
         }
       }
 
-      if(action === 'Update') {
+      if (action === "Update") {
         try {
           const updatedImage = await updateImage({
             image: {
               ...imageData,
-              _id: data._id
+              id: data.id,
             },
-          })
+          });
 
-          if(updatedImage) {
-            router.push(`/transformations/${updatedImage._id}`)
+          if (updatedImage) {
+            router.push(`/transformations/${updatedImage.id}`);
           }
         } catch (error) {
           console.log(error);
@@ -284,10 +284,10 @@ const TransformationForm = ({
   };
 
   useEffect(() => {
-    if(image && (type === 'restore' || type === 'removeBackground')) {
-      setNewTransformation(transformationType.config)
+    if (image && (type === "restore" || type === "removeBackground")) {
+      setNewTransformation(transformationType.config);
     }
-  }, [image, transformationType.config, type])
+  }, [image, transformationType.config, type]);
 
   return (
     <Form {...form}>

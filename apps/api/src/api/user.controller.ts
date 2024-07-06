@@ -25,19 +25,22 @@ export default class UserController {
   @Post()
   async createUser(@Body() user: CreateUserDto) {
     await this.userSvc.create(user);
-    return { message: 'User created successfully'};
+    return { message: 'User created successfully' };
   }
 
   @Get(':id')
   async getUserById(@Param('id') userId: string): Promise<UserDto> {
     const user = await this.userSvc.getUser({ userId });
-    return {...user, id: user.clerkId, };
+    return { ...user, id: user.clerkId };
   }
 
   @Patch(':id')
-  async updateUser(@Param('id') userId: string, @Body() user: UpdateUserDto): Promise<UserDto> {
+  async updateUser(
+    @Param('id') userId: string,
+    @Body() user: UpdateUserDto,
+  ): Promise<UserDto> {
     const updatedUser = await this.userSvc.update({ userId, ...user });
-    return {...updatedUser, id: updatedUser.clerkId};
+    return { ...updatedUser, id: updatedUser.clerkId };
   }
 
   @Delete(':id')
@@ -51,17 +54,23 @@ export default class UserController {
     @Param('id') userId: string,
     @Body() decreaseCreditBalanceDto: DecreaseCreditBalanceDto,
   ): Promise<UserDto> {
-    const updatedUser = await this.userSvc.decreaseCreditBalance({ 
-      userId, 
-      amount: decreaseCreditBalanceDto.amount 
+    const updatedUser = await this.userSvc.decreaseCreditBalance({
+      userId,
+      amount: decreaseCreditBalanceDto.amount,
     });
-    return {...updatedUser, id: updatedUser.clerkId};
+    return { ...updatedUser, id: updatedUser.clerkId };
   }
 
   @Post(':id/images')
-  async addImageToUser(@Param('id') userId: string, @Body() addImageDto: AddImageDto) {
+  async addImageToUser(
+    @Param('id') userId: string,
+    @Body() addImageDto: AddImageDto,
+  ) {
     const author = await this.userSvc.getUser({ userId });
-    const newImage = await this.imageSvc.addImage({ author, createImageProps: addImageDto.image });
+    const newImage = await this.imageSvc.addImage({
+      author,
+      createImageProps: addImageDto.image,
+    });
     return { message: 'Image added successfully', image: newImage };
   }
 }
