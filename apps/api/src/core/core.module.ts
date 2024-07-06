@@ -6,6 +6,8 @@ import { PrismaProvider } from './infrastructure/prisma.provider';
 import { ImageRepositoryProviderKey } from 'src/image/domain/image.repository';
 import { ImageRepositoryImpl } from './infrastructure/image.repository';
 import { MailSender } from './infrastructure/mail.sender';
+import Logger from './logger';
+import { ClsModule } from 'nestjs-cls';
 
 const RepoProviders = [
   {
@@ -20,8 +22,14 @@ const RepoProviders = [
 
 @Global()
 @Module({
-  imports: [CqrsModule],
-  providers: [...RepoProviders, PrismaProvider, MailSender],
-  exports: [CqrsModule, ...RepoProviders, MailSender],
+  imports: [
+    CqrsModule,
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
+  ],
+  providers: [...RepoProviders, PrismaProvider, MailSender, Logger],
+  exports: [CqrsModule, ...RepoProviders, MailSender, Logger],
 })
 export class CoreModule {}

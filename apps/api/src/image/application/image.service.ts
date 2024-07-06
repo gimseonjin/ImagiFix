@@ -29,6 +29,7 @@ export default class ImageService {
     );
     image.create();
     this.imageRepo.save({ image });
+    return image;
   }
 
   async getImage(props: IGetImage) {

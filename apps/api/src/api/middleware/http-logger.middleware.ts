@@ -1,23 +1,42 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+// http-logger.middleware.ts
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { ClsService } from 'nestjs-cls';
+import Logger from '../../core/logger';
 
 @Injectable()
 export class HttpLoggerMiddleware implements NestMiddleware {
-  private logger = new Logger('HTTP'); // HTTP(context)의 역할 -> HTTP 관련된 요청에서만 logger가 실행 됨 , express의 debug 라이브러리와 같은 역할
+  private logger: Logger;
+
+  constructor(private clsService: ClsService) {
+    this.logger = new Logger('HTTP', clsService);
+  }
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, originalUrl } = request;
-    const userAgent = request.get('user-agent') || ''; // header에서 가져옴
+    const requestId = uuidv4();
+    const store = { requestId };
 
-    // 응답이 끝났을 때
-    response.on('finish', () => {
-      const { statusCode } = response;
-      const contentLength = response.get('content-length');
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+    this.clsService.runWith(store, () => {
+      this.clsService.set('requestId', store.requestId);
+      const { ip, method, originalUrl } = request;
+      const userAgent = request.get('user-agent') || ''; // header에서 가져옴
+
+      // 요청이 들어왔을 때
+      this.logger.info(
+        `Request: ${method} ${originalUrl} - ${userAgent} ${ip}`,
       );
-    });
 
-    next();
+      // 응답이 끝났을 때
+      response.on('finish', () => {
+        const { statusCode } = response;
+        const contentLength = response.get('content-length');
+        this.logger.info(
+          `Response: ${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+        );
+      });
+
+      next();
+    });
   }
 }

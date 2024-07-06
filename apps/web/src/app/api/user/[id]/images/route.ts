@@ -26,6 +26,6 @@ export async function POST(
     throw new Error(`Error adding image: ${response.statusText}`);
   }
 
-  const image = await response.json();
+  const { image } = await response.json();
   return NextResponse.json({ message: "OK", image });
 }
