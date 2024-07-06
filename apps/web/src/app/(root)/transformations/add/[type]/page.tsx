@@ -1,6 +1,7 @@
 import Header from "@/components/shared/Header";
 import TransformationForm from "@/components/shared/TransformationForm";
 import { transformationTypes } from "@/constants";
+import { SearchParamProps, TransformationTypeKey } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -13,7 +14,7 @@ const getUserData = async (userId: string) => {
     throw new Error(`Error fetching user: ${response.statusText}`);
   }
 
-  const user = await response.json();
+  const { user } = await response.json();
   return user;
 };
 
@@ -34,7 +35,7 @@ const AddTransformationType = async ({
       <section className="mt-10">
         <TransformationForm
           action="Add"
-          userId={user.id}
+          userId={user.clerkId}
           type={transformation.type as TransformationTypeKey}
           creditBalance={user.creditBalance}
         />

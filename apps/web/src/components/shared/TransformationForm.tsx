@@ -16,17 +16,19 @@ import { Input } from "@/components/ui/input";
 import {
   AspectRatioKey,
   aspectRatioOptions,
+  creditFee,
   defaultValues,
   transformationTypes,
 } from "@/constants";
 import { CustomField } from "./CustomField";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { debounce } from "@/lib/utils";
 import _ from "lodash";
 import MediaUploader from "./MediaUploader";
 import { getCldImageUrl } from "next-cloudinary";
-import router from "next/router";
 import TransformedImage from "./TransformedImage";
+import { TransformationFormProps, Transformations } from "@/types";
+import { useRouter } from "next/navigation";
 
 export const formSchema = z.object({
   title: z.string(),
@@ -35,6 +37,102 @@ export const formSchema = z.object({
   prompt: z.string().optional(),
   publicId: z.string(),
 });
+
+declare type AddImageParams = {
+  image: {
+    title: string;
+    publicId: string;
+    transformationType: string;
+    width: number;
+    height: number;
+    config: any;
+    secureURL: string;
+    transformationURL: string;
+    aspectRatio: string | undefined;
+    prompt: string | undefined;
+    color: string | undefined;
+  };
+  userId: string;
+};
+
+declare type UpdateImageParams = {
+  image: {
+    _id: string;
+    title: string;
+    publicId: string;
+    transformationType: string;
+    width: number;
+    height: number;
+    config: any;
+    secureURL: string;
+    transformationURL: string;
+    aspectRatio: string | undefined;
+    prompt: string | undefined;
+    color: string | undefined;
+  };
+};
+
+const updateCredits = async (userId: string, creditFee: number) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CLIENT_SERVER_URL}/api/user/${userId}/decrease-balance`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ amount: creditFee }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Error fetching user: ${response.statusText}`);
+  }
+
+  const { user } = await response.json();
+  return user;
+};
+
+const addImage = async ({ image, userId }: AddImageParams) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CLIENT_SERVER_URL}/api/user/${userId}/images`,
+    {
+      method: "POST",
+      body: JSON.stringify({ image: image }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Error fetching user: ${response.statusText}`);
+  }
+
+  const { image: newImage } = await response.json();
+
+  return newImage;
+}
+
+const updateImage = async ({ image }: UpdateImageParams) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_CLIENT_SERVER_URL}/api/image/${image._id}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ image: image }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Error fetching user: ${response.statusText}`);
+  }
+
+  const { updatedImage } = await response.json();
+
+  return updatedImage;
+}
 
 const TransformationForm = ({
   action,
@@ -52,6 +150,7 @@ const TransformationForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [transformationConfig, setTransformationConfig] = useState(config);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const initialValues =
     data && action === "Update"
@@ -94,8 +193,39 @@ const TransformationForm = ({
         color: values.color,
       };
 
-      form.reset();
-      setImage(data);
+      if(action === 'Add') {
+        try {
+          const newImage = await addImage({
+            image: imageData,
+            userId,
+          })
+
+          if(newImage) {
+            form.reset()
+            setImage(data)
+            router.push(`/transformations/${newImage._id}`)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      if(action === 'Update') {
+        try {
+          const updatedImage = await updateImage({
+            image: {
+              ...imageData,
+              _id: data._id
+            },
+          })
+
+          if(updatedImage) {
+            router.push(`/transformations/${updatedImage._id}`)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
 
     setIsSubmitting(false);
@@ -148,8 +278,16 @@ const TransformationForm = ({
 
     setNewTransformation(null);
 
-    startTransition(async () => {});
+    startTransition(async () => {
+      await updateCredits(userId, creditFee);
+    });
   };
+
+  useEffect(() => {
+    if(image && (type === 'restore' || type === 'removeBackground')) {
+      setNewTransformation(transformationType.config)
+    }
+  }, [image, transformationType.config, type])
 
   return (
     <Form {...form}>
@@ -161,7 +299,6 @@ const TransformationForm = ({
           className="w-full"
           render={({ field }) => <Input {...field} className="input-field" />}
         />
-
         {type === "fill" && (
           <CustomField
             control={form.control}
