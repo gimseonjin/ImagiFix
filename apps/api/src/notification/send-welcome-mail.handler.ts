@@ -1,12 +1,15 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { UserCreatedEvent } from '../user/domain/user-created.event';
 import { EmailOptions, MailSender } from '../core/infrastructure/mail.sender';
+import Logger from '../core/logger';
 
 @EventsHandler(UserCreatedEvent)
 export class SendWelcomeEmailHandler
   implements IEventHandler<UserCreatedEvent>
 {
-  constructor(private readonly mailSender: MailSender) {}
+  constructor(
+    private readonly mailSender: MailSender,
+  ) {}
 
   async handle(event: UserCreatedEvent) {
     const { email, username, createdAt } = event.payload;

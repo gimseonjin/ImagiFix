@@ -1,6 +1,8 @@
 import * as winston from 'winston';
 import * as process from 'process';
-import { ClsService } from 'nestjs-cls';
+import { ClsService, ClsServiceManager } from 'nestjs-cls';
+import { UseCls } from 'nestjs-cls';
+import { v4 as uuidv4 } from 'uuid';
 
 const { createLogger, transports } = winston;
 const { combine, timestamp, colorize, printf } = winston.format;
@@ -8,10 +10,11 @@ const { combine, timestamp, colorize, printf } = winston.format;
 export default class Logger {
   private logger: winston.Logger;
   private is_production = process.env.NODE_ENV === 'production';
-  private clsService: ClsService;
+  clsService: ClsService;
 
-  constructor(private readonly subject: string, clsService: ClsService) {
-    this.clsService = clsService;
+  constructor(private readonly subject: string) {
+    console.log(subject)
+    this.clsService = ClsServiceManager.getClsService();
 
     this.logger = createLogger({
       level: this.is_production ? 'info' : 'silly',
@@ -25,7 +28,8 @@ export default class Logger {
             format: 'YYYY-MM-DD HH:mm:ss',
           }),
           printf((info) => {
-            const requestId = this.clsService.get('requestId') || 'unknown';
+            const requestId = this.clsService.getId() || 'unknown';
+            console.log('requestId', requestId);
 
             return this.is_production
               ? `[${info.timestamp}] [${process.env.NODE_ENV}] [${info.level}] [${this.subject}] [${requestId}] : ${info.message}`
